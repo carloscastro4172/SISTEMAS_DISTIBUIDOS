@@ -1,11 +1,15 @@
+# client_random_multithread.py
 import socket
 import threading
 import random
 import time
 
-SERVER_HOST = 'localhost'
-SERVER_PORT = 14000
+# ----------------- CONFIGURACIÓN -----------------
+SERVER_HOST = 'localhost'     # dirección del servidor
+SERVER_PORT = 14000           # puerto del servidor
+CANTIDAD_CLIENTES = 9         # número de hilos (clientes simultáneos)
 
+# Diccionario de palabras
 PALABRAS = {
     "saludos": ["hola", "adiós", "hello", "bye", "buenas"],
     "animales": ["perro", "gato", "elefante", "tigre", "pájaro"],
@@ -14,9 +18,12 @@ PALABRAS = {
     "verbos": ["corre", "salta", "lee", "escribe", "mira"]
 }
 
-CANTIDAD_CLIENTES = 9
-
-def generar_mensaje_aleatorio():
+# ----------------- FUNCIONES -----------------
+def generar_mensaje_aleatorio() -> str:
+    """
+    Genera una frase aleatoria combinando categorías de palabras.
+    Ejemplo: "hola perro en casa corre teclado"
+    """
     return " ".join([
         random.choice(PALABRAS["saludos"]),
         random.choice(PALABRAS["animales"]),
@@ -26,46 +33,36 @@ def generar_mensaje_aleatorio():
         random.choice(PALABRAS["cosas"])
     ])
 
-# Crear mensajes aleatorios para cada hilo (ordenado por hilo)
-mensajes = {idx: generar_mensaje_aleatorio() for idx in range(1, CANTIDAD_CLIENTES + 1)}
-
-# Lista de hilos ordenada
-hilos_ordenados = list(range(1, CANTIDAD_CLIENTES + 1))
-
-# Desordenar el orden de envío
-orden_envio = hilos_ordenados.copy()
-random.shuffle(orden_envio)
-
 def cliente(idx: int):
+    """
+    Cada hilo (cliente) se conecta al servidor, envía entre 1 y 20 mensajes
+    generados aleatoriamente, espera respuesta y termina.
+    """
+    cantidad = random.randint(1, 20)  # número de mensajes que enviará este cliente
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        time.sleep(random.uniform(0.1, 0.5))  # Retraso aleatorio para simular desorden
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((SERVER_HOST, SERVER_PORT))
-        mensaje = f"{idx}|{mensajes[idx]}"
-        sock.sendall(mensaje.encode())
-        respuesta = sock.recv(1024).decode()
-        print(f"[Hilo-{idx}] Enviado: '{mensaje}' | Recibido: '{respuesta}'")
+        for _ in range(cantidad):
+            mensaje = generar_mensaje_aleatorio()
+            envio = f"[HILO-{idx}] {mensaje}"
+            sock.sendall(envio.encode())                 # enviar al servidor
+            respuesta = sock.recv(1024).decode()         # recibir respuesta
+            print(f"[Hilo-{idx}] Enviado: '{mensaje}' | Recibido: '{respuesta}'")
+            time.sleep(random.uniform(0.10, 0.25))       # pausa breve entre mensajes
     except Exception as e:
         print(f"[Hilo-{idx}] Error: {e}")
     finally:
         sock.close()
 
-print(f"Generando {CANTIDAD_CLIENTES} hilos en orden...")
-print(f"Enviando mensajes en orden aleatorio de hilos: {orden_envio}\n")
+# ----------------- MAIN -----------------
+if __name__ == "__main__":
+    hilos = []
+    for idx in range(1, CANTIDAD_CLIENTES + 1):
+        hilo = threading.Thread(target=cliente, args=(idx,), daemon=True)
+        hilos.append(hilo)
+        hilo.start()
 
-# Crear hilos en orden
-hilos = []
-for idx in hilos_ordenados:
-    hilo = threading.Thread(target=cliente, args=(idx,), daemon=True)
-    hilos.append(hilo)
+    for h in hilos:
+        h.join()
 
-# Iniciar hilos en orden aleatorio
-for idx in orden_envio:
-    hilos[idx - 1].start()
-    time.sleep(0.05)  # Pequeño retraso para visualizar desorden
-
-# Esperar a que todos terminen
-for h in hilos:
-    h.join()
-
-print("\nTodos los hilos han terminado.")
+    print("\n✅ Todos los hilos han terminado.")
