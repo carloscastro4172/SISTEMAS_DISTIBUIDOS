@@ -3,8 +3,8 @@ from socket import *
 import threading
 import time
 
-serverName = 'localhost'
-serverPort = 14000
+serverName = '172.23.199.29'
+serverPort = 18000
 
 mensajes = [
     "hola", "adios", "perro", "gato", "casa", "escuela", "trabajo", "amigo",

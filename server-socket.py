@@ -2,7 +2,7 @@
 from socket import *
 import threading
 
-serverPort = 14000
+serverPort = 18000
 serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind(("", serverPort))
 serverSocket.listen(5)   # permite hasta 5 conexiones en cola
