@@ -1,6 +1,6 @@
 from socket import *
-serverName = 'localhost'
-serverPort = 14000
+serverName = '172.23.199.29'
+serverPort = 18000
 next = True
 while (next):
     clientSocket = socket(AF_INET, SOCK_STREAM)
