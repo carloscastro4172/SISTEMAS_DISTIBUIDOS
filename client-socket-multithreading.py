@@ -6,7 +6,6 @@ import time
 serverName = 'localhost'
 serverPort = 14000
 
-# Array con palabras en inglés y español (todas lowercase)
 mensajes = [
     "hola", "adios", "perro", "gato", "casa", "escuela", "trabajo", "amigo",
     "house", "goodbye", "dog", "cat", "home", "school", "work", "friend",
@@ -35,10 +34,8 @@ for i, msg in enumerate(mensajes, start=1):
     t = threading.Thread(target=enviar_mensaje, args=(msg, i), daemon=True)
     t.start()
     hilos.append(t)
-    # Pequeño espaciamiento para no abrir todas las conexiones exactamente al mismo tiempo
     time.sleep(0.03)
 
-# Esperar a que terminen todos los hilos
 for t in hilos:
     t.join()
 
