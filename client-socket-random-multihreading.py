@@ -5,7 +5,7 @@ import random
 import time
 
 # ----------------- CONFIGURACIÓN -----------------
-SERVER_HOST = '172.23.199.29'     # dirección del servidor
+SERVER_HOST = 'localhost'     # dirección del servidor
 SERVER_PORT = 14000           # puerto del servidor
 CANTIDAD_CLIENTES = 9         # número de hilos (clientes simultáneos)
 
