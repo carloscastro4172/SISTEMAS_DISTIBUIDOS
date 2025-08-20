@@ -1,59 +1,71 @@
-# client_multithreading_random_ids.py
-from socket import *
+import socket
 import threading
-import time
 import random
+import time
 
-serverName = 'localhost'
-serverPort = 18000
+SERVER_HOST = 'localhost'
+SERVER_PORT = 14000
 
-# Diccionario con palabras en inglés y español
-diccionario = {
-    "saludos": ["hola", "adios", "buenos dias", "buenas noches"],
-    "animales": ["perro", "gato", "pajaro", "pez", "dog", "cat", "bird", "fish"],
-    "lugares": ["casa", "escuela", "trabajo", "parque", "home", "school", "work", "park"],
-    "objetos": ["computadora", "teclado", "pantalla", "internet", "computer", "keyboard", "monitor", "internet"]
+PALABRAS = {
+    "saludos": ["hola", "adiós", "hello", "bye", "buenas"],
+    "animales": ["perro", "gato", "elefante", "tigre", "pájaro"],
+    "lugares": ["casa", "escuela", "trabajo", "parque", "oficina"],
+    "cosas": ["computadora", "teclado", "pantalla", "mouse", "internet"],
+    "verbos": ["corre", "salta", "lee", "escribe", "mira"]
 }
 
-# Aplana todas las palabras del diccionario y barájalas
-palabras = [p for lista in diccionario.values() for p in lista]
-random.shuffle(palabras)
+CANTIDAD_CLIENTES = 9
 
-# Crea una asignación aleatoria 1..N de "números de hilo" (únicos)
-NUM_HILOS = len(palabras)
-ids_hilo = list(range(1, NUM_HILOS + 1))
-random.shuffle(ids_hilo)  # ahora el número de hilo es aleatorio para cada envío
+def generar_mensaje_aleatorio():
+    return " ".join([
+        random.choice(PALABRAS["saludos"]),
+        random.choice(PALABRAS["animales"]),
+        "en",
+        random.choice(PALABRAS["lugares"]),
+        random.choice(PALABRAS["verbos"]),
+        random.choice(PALABRAS["cosas"])
+    ])
 
-def enviar_mensaje(sentence: str, hilo_id: int):
+# Crear mensajes aleatorios para cada hilo (ordenado por hilo)
+mensajes = {idx: generar_mensaje_aleatorio() for idx in range(1, CANTIDAD_CLIENTES + 1)}
+
+# Lista de hilos ordenada
+hilos_ordenados = list(range(1, CANTIDAD_CLIENTES + 1))
+
+# Desordenar el orden de envío
+orden_envio = hilos_ordenados.copy()
+random.shuffle(orden_envio)
+
+def cliente(idx: int):
     try:
-        clientSocket = socket(AF_INET, SOCK_STREAM)
-        clientSocket.connect((serverName, serverPort))
-
-        # Etiqueta el mensaje con el número de hilo aleatorio
-        mensaje = f"[HILO-{hilo_id:02d}] {sentence}"
-        clientSocket.send(mensaje.encode())
-
-        modifiedSentence = clientSocket.recv(1024)
-        print(f"[HILO-{hilo_id:02d}] Enviado: {sentence}  |  From Server: {modifiedSentence.decode()}")
+        time.sleep(random.uniform(0.1, 0.5))  # Retraso aleatorio para simular desorden
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((SERVER_HOST, SERVER_PORT))
+        mensaje = f"{idx}|{mensajes[idx]}"
+        sock.sendall(mensaje.encode())
+        respuesta = sock.recv(1024).decode()
+        print(f"[Hilo-{idx}] Enviado: '{mensaje}' | Recibido: '{respuesta}'")
     except Exception as e:
-        print(f"[HILO-{hilo_id:02d}] Error con '{sentence}': {e}")
+        print(f"[Hilo-{idx}] Error: {e}")
     finally:
-        try:
-            clientSocket.close()
-        except:
-            pass
+        sock.close()
 
-# Lanza un hilo por cada palabra (cada uno con un id de hilo aleatorio único)
+print(f"Generando {CANTIDAD_CLIENTES} hilos en orden...")
+print(f"Enviando mensajes en orden aleatorio de hilos: {orden_envio}\n")
+
+# Crear hilos en orden
 hilos = []
-for i, palabra in enumerate(palabras):
-    hilo_id = ids_hilo[i]  # asignación aleatoria pero sin repetir
-    t = threading.Thread(target=enviar_mensaje, args=(palabra, hilo_id), daemon=True)
-    t.start()
-    hilos.append(t)
-    time.sleep(0.03)  # pequeño desfase para no saturar
+for idx in hilos_ordenados:
+    hilo = threading.Thread(target=cliente, args=(idx,), daemon=True)
+    hilos.append(hilo)
 
-# Espera a que todos terminen
-for t in hilos:
-    t.join()
+# Iniciar hilos en orden aleatorio
+for idx in orden_envio:
+    hilos[idx - 1].start()
+    time.sleep(0.05)  # Pequeño retraso para visualizar desorden
 
-print("Listo.")
+# Esperar a que todos terminen
+for h in hilos:
+    h.join()
+
+print("\nTodos los hilos han terminado.")
