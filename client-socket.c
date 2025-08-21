@@ -1,3 +1,17 @@
+    // Explicación del programa:
+    // Este cliente TCP interactivo crea una nueva conexión con el servidor en cada iteración del bucle principal,
+    // apuntando a la dirección 127.0.0.1 y al puerto 18000. La entrada del programa proviene del usuario por
+    // stdin: primero se solicita una cadena (se espera en minúsculas, aunque no es requisito técnico) y luego
+    // se pregunta si desea enviar otro mensaje mediante una confirmación “Y/N”. Con cada ciclo, el cliente crea
+    // un socket, establece la conexión con el servidor, envía exactamente los bytes de la cadena escrita por el
+    // usuario y espera una respuesta hasta 1024 bytes. La salida del programa consiste en imprimir en consola
+    // la línea “From Server: …” con el contenido recibido o un aviso si el servidor cerró la conexión o no envió
+    // datos. Tras procesar la respuesta, el socket se cierra antes de volver a preguntar si se desea continuar,
+    // por lo que cada mensaje se maneja con una conexión independiente (mismo comportamiento que un cliente que
+    // “conecta, envía, recibe y cierra” por mensaje). En Windows se realiza la inicialización y limpieza de Winsock
+    // con WSAStartup/WSACleanup; en sistemas POSIX se usan socket(), connect(), send(), recv() y close() normales.
+    // Si el usuario introduce una cadena vacía, no se envía nada y se informa en pantalla. Cuando el usuario responde
+    // ‘N’ o ‘n’ a la pregunta “Other message: (Y/N)”, el bucle termina y el programa finaliza.
 
   #include <sys/types.h>
   #include <sys/socket.h>
