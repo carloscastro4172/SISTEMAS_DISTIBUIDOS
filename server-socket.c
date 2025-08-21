@@ -1,4 +1,21 @@
-// server.c — Servidor TCP simple que reconoce mensajes "i|texto"
+    // Explicación del programa:
+    // Este es un servidor TCP escrito en C que escucha únicamente en la dirección 127.0.0.1 y en el puerto 18000.
+    // En primer lugar crea un socket de tipo stream (TCP), configura la opción SO_REUSEADDR para permitir reutilizar
+    // el puerto rápidamente tras un cierre, y luego lo asocia a la dirección y puerto especificados mediante bind.
+    // Después, el servidor pasa a escuchar conexiones entrantes con listen, manteniendo una cola de hasta 10 clientes.
+    // En el bucle principal, acepta conexiones una por una con accept. Al establecerse la conexión, imprime en consola
+    // la dirección y el puerto del cliente y entra en un bucle dedicado a la comunicación con ese cliente. En cada
+    // iteración recibe datos con recv, verificando si el cliente cerró la conexión (cuando recv devuelve 0). Si se
+    // recibe un mensaje, se guarda en el buffer, se imprime en la consola del servidor y luego se construye una
+    // respuesta que indica cuántos bytes se recibieron y un eco del mismo mensaje. Esta respuesta se envía de vuelta
+    // al cliente usando send. Cuando el cliente cierra la conexión o ocurre un error, el servidor cierra el descriptor
+    // de esa conexión y vuelve a esperar nuevos clientes. El programa se ejecuta indefinidamente hasta que se detenga
+    // manualmente. La entrada del servidor son los mensajes enviados por los clientes a través de sockets TCP, y la
+    // salida consiste en imprimir por consola los mensajes recibidos y responder a cada cliente con una cadena del
+    // tipo "OK N bytes recibidos | eco: mensaje". Un ejemplo de interacción sería: si un cliente envía la cadena
+    // "hola mundo", el servidor imprime "[Servidor] Recibido: hola mundo" y responde al cliente con "OK 11 bytes
+    // recibidos | eco: hola mundo". Cuando el cliente se desconecta, el servidor muestra en consola que la conexión
+    // se cerró y continúa disponible para atender a nuevos clientes.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
