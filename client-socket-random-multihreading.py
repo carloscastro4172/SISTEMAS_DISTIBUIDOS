@@ -1,3 +1,21 @@
+# Explicación del programa:
+# Este cliente multihilo en Python lanza exactamente CANTIDAD_CLIENTES hilos; cada hilo actúa como un cliente TCP que abre
+# su propia conexión con el servidor configurado en 'localhost' y puerto 14000. La entrada no proviene del usuario en tiempo
+# real, sino de los parámetros definidos arriba (SERVER_HOST, SERVER_PORT y CANTIDAD_CLIENTES) y del diccionario PALABRAS,
+# desde el cual se generan frases aleatorias combinando saludos, animales, lugares, verbos y cosas. En cada hilo, el cliente
+# decide al azar cuántos mensajes enviará (entre 1 y 20), construye cada mensaje y lo envía con un prefijo identificador del
+# hilo en la forma "[HILO-i]". Después de cada envío, el cliente espera la respuesta del servidor por el mismo socket y la
+# imprime en consola, introduciendo pausas aleatorias de 0.10 a 0.25 segundos para emular tiempos no deterministas. La salida
+# del programa consiste en líneas impresas que muestran, por hilo, el mensaje enviado y la respuesta recibida. Al terminar
+# todos los hilos, el programa principal realiza join() para esperar su finalización ordenada y finalmente muestra el texto
+# " Todos los hilos han terminado.". Para que este cliente funcione, debe existir un servidor TCP escuchando en la dirección
+# y puerto indicados, devolviendo alguna respuesta por cada mensaje recibido; de lo contrario, se registrarán errores por hilo.
+# Un ejemplo de salida posible sería:
+# [Hilo-1] Enviado: 'hola perro en casa corre teclado' | Recibido: '[HILO-1] HOLA PERRO EN CASA CORRE TECLADO'
+# [Hilo-3] Enviado: 'buenas tigre en parque mira mouse' | Recibido: '[HILO-3] BUENAS TIGRE EN PARQUE MIRA MOUSE'
+# ...
+#  Todos los hilos han terminado.
+
 # client_random_multithread.py
 import socket
 import threading
@@ -65,4 +83,4 @@ if __name__ == "__main__":
     for h in hilos:
         h.join()
 
-    print("\n✅ Todos los hilos han terminado.")
+    print("\n Todos los hilos han terminado.")
