@@ -144,4 +144,4 @@ python3 subscriber_multi.py
 
 ## 👨‍💻 Authors
 
-Developed for the **Distributed Systems Lab** by Carlos Castro and team.
+Developed for the **Distributed Systems Lab** by Carlos Castro and Freddy Valenzuela.
