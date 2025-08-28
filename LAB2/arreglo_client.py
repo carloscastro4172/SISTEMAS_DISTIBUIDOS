@@ -1,8 +1,24 @@
+"""
+arreglo_client.py
+
+Client for a distributed Numeric Array Manager using XML-RPC.
+
+This program connects to a remote server and allows the user to perform operations on two numeric arrays:
+    1. Element-wise sum
+    2. Element-wise subtraction
+    3. Dot product
+    4. Element-wise maximum
+    5. Element-wise minimum
+
+The client provides a simple terminal interface to input arrays, select the operation, and display the result.
+The user can repeat operations in a loop and exit with option 6.
+
+Developed for distributed systems lab. Implements all required operations and user interaction as specified in the assignment.
+"""
 import xmlrpc.client
 
 def read_array(prompt):
     arr = input(prompt)
-    # Permitir entrada tipo: 1 2 3 4
     return [float(x) for x in arr.strip().split()]
 
 server = input('Dirección del servidor: ')
@@ -10,34 +26,40 @@ port = input('Puerto del servidor: ')
 
 proxy = xmlrpc.client.ServerProxy(f"http://{server}:{port}/test", allow_none=True)
 
-print("\nOperaciones disponibles:")
-print("1. Suma de arreglos")
-print("2. Resta de arreglos")
-print("3. Producto punto")
-print("4. Máximo elemento a elemento")
-print("5. Mínimo elemento a elemento")
-op = input("Seleccione la operación (1-5): ")
+while True:
+    print("\nOperaciones disponibles:")
+    print("1. Suma de arreglos")
+    print("2. Resta de arreglos")
+    print("3. Producto punto")
+    print("4. Máximo elemento a elemento")
+    print("5. Mínimo elemento a elemento")
+    print("6. Salir")
+    op = input("Seleccione la operación (1-6): ")
 
-arr1 = read_array("Ingrese el primer arreglo (números separados por espacio): ")
-arr2 = read_array("Ingrese el segundo arreglo (números separados por espacio): ")
+    if op == '6':
+        print("Saliendo... ¡Hasta luego!")
+        break
 
-try:
-    if op == '1':
-        result = proxy.sum(arr1, arr2)
-        print("Resultado de la suma:", result)
-    elif op == '2':
-        result = proxy.sub(arr1, arr2)
-        print("Resultado de la resta:", result)
-    elif op == '3':
-        result = proxy.dotprod(arr1, arr2)
-        print("Producto punto:", result)
-    elif op == '4':
-        result = proxy.max(arr1, arr2)
-        print("Máximos elemento a elemento:", result)
-    elif op == '5':
-        result = proxy.min(arr1, arr2)
-        print("Mínimos elemento a elemento:", result)
-    else:
-        print("Operación no válida.")
-except Exception as e:
-    print('Error en la operación:', e)
+    arr1 = read_array("Ingrese el primer arreglo (números separados por espacio): ")
+    arr2 = read_array("Ingrese el segundo arreglo (números separados por espacio): ")
+
+    try:
+        if op == '1':
+            result = proxy.sum(arr1, arr2)
+            print("Resultado de la suma:", result)
+        elif op == '2':
+            result = proxy.sub(arr1, arr2)
+            print("Resultado de la resta:", result)
+        elif op == '3':
+            result = proxy.dotprod(arr1, arr2)
+            print("Producto punto:", result)
+        elif op == '4':
+            result = proxy.max(arr1, arr2)
+            print("Máximos elemento a elemento:", result)
+        elif op == '5':
+            result = proxy.min(arr1, arr2)
+            print("Mínimos elemento a elemento:", result)
+        else:
+            print("Operación no válida.")
+    except Exception as e:
+        print('Error en la operación:', e)
