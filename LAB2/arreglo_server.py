@@ -1,3 +1,19 @@
+"""
+arreglo_server.py
+
+Server for a distributed Numeric Array Manager using XML-RPC.
+
+This server exposes remote methods to operate on two numeric arrays:
+    1. Element-wise sum
+    2. Element-wise subtraction
+    3. Dot product
+    4. Element-wise maximum
+    5. Element-wise minimum
+
+Clients can connect via XML-RPC and request any of these operations. The server listens on the specified IP and port.
+
+Developed for distributed systems lab. Implements all required operations as specified in the assignment.
+"""
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 
