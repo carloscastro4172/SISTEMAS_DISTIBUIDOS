@@ -1,9 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Script para repetir los ejercicios A1–A9 con dnspython.
-Versión lineal y simplificada (maneja NXDOMAIN y NoAnswer).
-"""
+
 
 import dns.resolver
 import dns.reversename
