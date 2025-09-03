@@ -1,0 +1,101 @@
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+Non-authoritative answer:
+Name:	yachaytech.edu.ec
+Address: 190.103.191.42
+
+8.8.8.8.in-addr.arpa	name = dns.google.
+
+Authoritative answers can be found from:
+
+Server:		1.1.1.1
+Address:	1.1.1.1#53
+
+Non-authoritative answer:
+Name:	hpc.cedia.edu.ec
+Address: 201.159.220.90
+
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+Non-authoritative answer:
+yachaytech.edu.ec	mail exchanger = 0 yachaytech-edu-ec.mail.protection.outlook.com.
+
+Authoritative answers can be found from:
+
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+Non-authoritative answer:
+yachaytech.edu.ec	nameserver = ns102.dominiosecuador.ec.
+yachaytech.edu.ec	nameserver = pns101.dominiosecuador.ec.
+yachaytech.edu.ec	nameserver = ns101.dominiosecuador.ec.
+yachaytech.edu.ec	nameserver = ns104.cloudns.net.
+yachaytech.edu.ec	nameserver = pns102.dominiosecuador.ec.
+yachaytech.edu.ec	nameserver = pns104.cloudns.net.
+yachaytech.edu.ec	nameserver = pns103.dominiosecuador.ec.
+
+Authoritative answers can be found from:
+
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+Non-authoritative answer:
+yachaytech.edu.ec
+	origin = ns101.cloudns.net
+	mail addr = support.cloudns.net
+	serial = 2025072902
+	refresh = 7200
+	retry = 1800
+	expire = 1209600
+	minimum = 3600
+
+Authoritative answers can be found from:
+
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+Non-authoritative answer:
+www.microsoft.com	canonical name = www.microsoft.com-c-3.edgekey.net.
+
+Authoritative answers can be found from:
+
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+------------
+    QUESTIONS:
+	yachaytech.edu.ec, type = A, class = IN
+    ANSWERS:
+    ->  yachaytech.edu.ec
+	internet address = 190.103.191.42
+	ttl = 1761
+    AUTHORITY RECORDS:
+    ADDITIONAL RECORDS:
+------------
+Non-authoritative answer:
+Name:	yachaytech.edu.ec
+Address: 190.103.191.42
+------------
+    QUESTIONS:
+	yachaytech.edu.ec, type = AAAA, class = IN
+    ANSWERS:
+    AUTHORITY RECORDS:
+    ->  yachaytech.edu.ec
+	origin = ns101.cloudns.net
+	mail addr = support.cloudns.net
+	serial = 2025072902
+	refresh = 7200
+	retry = 1800
+	expire = 1209600
+	minimum = 3600
+	ttl = 1494
+    ADDITIONAL RECORDS:
+------------
+
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+** server can't find nonexistdomain12345.com: NXDOMAIN
+
