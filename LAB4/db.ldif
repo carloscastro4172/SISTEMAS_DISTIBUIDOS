@@ -1,0 +1,9 @@
+dn: olcDatabase={1}mdb,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcMdbConfig
+olcDatabase: {1}mdb
+olcSuffix: dc=example,dc=com
+olcRootDN: cn=admin,dc=example,dc=com
+olcRootPW: {SSHA}PBreGs+rv/MSuJt/lhOV5WmCX8FPwE69
+olcDbDirectory: /var/lib/ldap
+olcDbIndex: objectClass eq

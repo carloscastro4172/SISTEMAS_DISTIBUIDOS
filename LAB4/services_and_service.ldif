@@ -1,0 +1,36 @@
+dn: ou=Services,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: Services
+
+dn: cn=EchoService,ou=Services,dc=example,dc=com
+objectClass: top
+objectClass: device
+objectClass: ipHost
+cn: EchoService
+ipHostNumber: 172.23.204.149
+description: 5000
+
+dn: cn=ChatService,ou=Services,dc=example,dc=com
+objectClass: top
+objectClass: device
+objectClass: ipHost
+cn: ChatService
+ipHostNumber: 172.23.204.149
+description: 6000
+
+dn: cn=DBService,ou=Services,dc=example,dc=com
+objectClass: top
+objectClass: device
+objectClass: ipHost
+cn: DBService
+ipHostNumber: 172.23.204.149
+description: 3306
+
+dn: cn=APIGateway,ou=Services,dc=example,dc=com
+objectClass: top
+objectClass: device
+objectClass: ipHost
+cn: APIGateway
+ipHostNumber: 172.23.204.149
+description: 8080

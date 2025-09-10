@@ -1,0 +1,7 @@
+dn: cn=EchoService,ou=Services,dc=example,dc=com
+objectClass: top
+objectClass: device
+objectClass: ipHost
+cn: EchoService
+ipHostNumber: 172.23.204.149
+description: 5000
