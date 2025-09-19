@@ -2,7 +2,7 @@ import zmq
 import threading
 import time
 
-hostname = "localhost"
+hostname = "172.23.210.237"
 port = "5000"
 def utc_time_client():
     context = zmq.Context()

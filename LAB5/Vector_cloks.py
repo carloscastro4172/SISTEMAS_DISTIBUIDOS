@@ -1,50 +1,76 @@
+import socket
 import threading
+import json
 import time
 
-N = 3  # número de procesos
+N = 2  # número de procesos (ejemplo: 2 PCs)
 
 class Process:
-    def __init__(self, pid):
+    def __init__(self, pid, port, peers):
         self.pid = pid
         self.vc = [0] * N
+        self.port = port
+        self.peers = peers  # lista [(ip, port), ...]
 
     def local_event(self):
         self.vc[self.pid] += 1
         print(f"P{self.pid+1} local event -> VC = {self.vc}")
 
-    def send_event(self, other):
+    def send_event(self, target_ip, target_port):
         self.vc[self.pid] += 1
-        print(f"P{self.pid+1} sends to P{other.pid+1} -> VC = {self.vc}")
-        other.receive_event(self.vc)
+        msg = json.dumps(self.vc).encode("utf-8")
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((target_ip, target_port))
+            s.sendall(msg)
+            s.close()
+            print(f"P{self.pid+1} sent to {target_ip}:{target_port} -> VC = {self.vc}")
+        except Exception as e:
+            print(f"Error sending: {e}")
 
     def receive_event(self, msg_vc):
-        # merge con el máximo de cada posición
         self.vc = [max(self.vc[i], msg_vc[i]) for i in range(N)]
         self.vc[self.pid] += 1
-        print(f"P{self.pid+1} receives -> VC = {self.vc}")
+        print(f"P{self.pid+1} received -> VC = {self.vc}")
 
-def simulate():
-    P1 = Process(0)
-    P2 = Process(1)
-    P3 = Process(2)
+    def server(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind(("", self.port))  # escucha en su propio puerto
+        s.listen(5)
+        print(f"P{self.pid+1} listening on port {self.port}")
 
-    # Simulación de eventos
-    P1.local_event()
-    time.sleep(1)
+        while True:
+            conn, addr = s.accept()
+            data = conn.recv(1024).decode("utf-8")
+            if data:
+                msg_vc = json.loads(data)
+                self.receive_event(msg_vc)
+            conn.close()
 
-    P1.send_event(P2)
-    time.sleep(1)
+def run_process(pid, port, peers):
+    p = Process(pid, port, peers)
 
-    P2.local_event()
-    time.sleep(1)
+    # lanzar el servidor en hilo aparte
+    threading.Thread(target=p.server, daemon=True).start()
 
-    P2.send_event(P3)
-    time.sleep(1)
+    time.sleep(5)  
 
-    P3.local_event()
-    time.sleep(1)
+    # ejemplo de eventos
+    if pid == 0:
+        p.local_event()
+        time.sleep(2)
+        ip, port = peers[1]
+        p.send_event(ip, port)
 
-    P3.send_event(P1)
+    elif pid == 1:
+        time.sleep(5)
+        p.local_event()
 
 if __name__ == "__main__":
-    simulate()
+
+    peers = [("172.23.210.72", 5000),  # PC1
+            ("172.23.210.237", 5001)]  # PC2
+
+    run_process(pid=0, port=5000, peers=peers)
+    # run_process(pid=1, port=5001, peers=peers)
+

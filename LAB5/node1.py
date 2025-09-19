@@ -4,31 +4,24 @@ import time
 from datetime import datetime
 import random
 
-# Configuración de puertos
-PEERS = {
-    1: 5001,
-    2: 5002,
-    3: 5003
-}
+# Datos del otro nodo (tu amigo)
+hostname = "172.23.210.237"   # IP de Node2
+port = "4444"                 # puerto de Node2
 
-def peer(node_id):
+def peer1():
     context = zmq.Context()
 
-    # Socket REP para recibir tiempos
+    # REP socket para escuchar en tu PC
     rep_socket = context.socket(zmq.REP)
-    rep_socket.bind(f"tcp://*:{PEERS[node_id]}")
+    rep_socket.bind("tcp://*:5001")   # Node1 escucha en el puerto 5001
 
-    # Sockets REQ para enviar tiempos a los demás
-    req_sockets = {}
-    for pid, port in PEERS.items():
-        if pid != node_id:
-            s = context.socket(zmq.REQ)
-            s.connect(f"tcp://localhost:{port}")
-            req_sockets[pid] = s
+    # REQ socket para enviar al Node2
+    req_socket = context.socket(zmq.REQ)
+    req_socket.connect(f"tcp://{hostname}:{port}")  # conecta a Node2
 
-    # Tiempo local inicial con offset aleatorio
+    # Tiempo inicial con offset
     local_time = datetime.utcnow().timestamp() + random.randint(-5, 5)
-    print(f"Node {node_id} start time: {local_time}")
+    print(f"Node 1 start time: {local_time}")
 
     # Hilo receptor
     def receiver():
@@ -42,16 +35,15 @@ def peer(node_id):
     # Ciclo de sincronización
     while True:
         times = [local_time]
-        for pid, s in req_sockets.items():
-            s.send_string("time?")
-            reply = s.recv_string()
-            times.append(float(reply))
+        req_socket.send_string("time?")
+        reply = req_socket.recv_string()
+        times.append(float(reply))
 
         avg_time = sum(times) / len(times)
-        print(f"Node {node_id} -> before: {local_time:.2f}, after sync: {avg_time:.2f}")
+        print(f"Node 1 -> before: {local_time:.2f}, after sync: {avg_time:.2f}")
         local_time = avg_time
 
         time.sleep(5)
 
 if __name__ == "__main__":
-    peer(1)
+    peer1()
