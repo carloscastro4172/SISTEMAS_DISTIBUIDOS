@@ -1,0 +1,13 @@
+# Ignorar datos de MySQL
+LAB7/mysql-lab/primary/data/
+LAB7/mysql-lab/replica/data/
+LAB7/mysql-lab2/mysql-primary/data/
+LAB7/mysql-lab2/mysql-replica/data/
+
+# Archivos binarios de MySQL
+*.ibd
+*.ib_logfile*
+*.dblwr
+*.frm
+*.err
+*.log
