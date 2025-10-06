@@ -1,0 +1,43 @@
+services:
+  primary:
+    image: mysql:8.0
+    container_name: mysql-primary2-lab2
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lab
+    command:
+      - --server-id=11
+      - --log-bin=mysql-bin
+      - --binlog_format=ROW
+      - --gtid_mode=ON
+      - --enforce_gtid_consistency=ON
+      - --log-replica-updates=ON
+      - --default_authentication_plugin=mysql_native_password
+    ports:
+      - "3406:3306"
+    volumes:
+      - lab2-primary-data:/var/lib/mysql
+
+  replica:
+    image: mysql:8.0
+    container_name: mysql-replica2-lab2
+    depends_on:
+      - primary
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    command:
+      - --server-id=12
+      - --log-bin=mysql-bin
+      - --binlog_format=ROW
+      - --gtid_mode=ON
+      - --enforce_gtid_consistency=ON
+      - --read_only=ON
+      - --default_authentication_plugin=mysql_native_password
+    ports:
+      - "3407:3306"
+    volumes:
+      - lab2-replica-data:/var/lib/mysql
+
+volumes:
+  lab2-primary-data:
+  lab2-replica-data:

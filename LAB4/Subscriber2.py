@@ -1,9 +1,9 @@
 import ldap
 
 def lookup_service(service_name):
-    ldap_server = "ldap://localhost"
+    ldap_server = "ldap://172.23.210.237"
     admin_dn = "cn=admin,dc=example,dc=com"
-    admin_pw = "123456789"
+    admin_pw = "3355"
     base_dn = "ou=Services,dc=example,dc=com"
 
     conn = ldap.initialize(ldap_server)
